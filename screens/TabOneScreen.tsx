@@ -1,45 +1,75 @@
-import { StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import React from 'react';
+import { StyleSheet, TouchableOpacity, TextInput, Button, Alert, SafeAreaView, ScrollView, FlatList, SectionList } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
+import React, { useState } from 'react';
+
+const inputArray = [''];
+
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  const [value, setValue] = React.useState('1')
 
-  const array1 = [1, 4, 9, 16];
+  const [InputData, setInputData] = React.useState('')
+  
+  const addInputToArray = () =>{
 
-  const add = (test:string) => {
-    console.log(test)
+    inputArray.push(InputData.toString());
+    //Alert.alert('Item added');
+    console.log(inputArray);
   }
 
-// pass a function to map
+  const Divider = () => {
+
+    return (
+      <View style={{
+        height: 1,
+        width: "100%",
+        backgroundColor: 'black',
+      }} />
+    );
+  }
+
+  const Show_Selected_Item = (selected_item) => {
+    Alert.alert(selected_item);
+  }
 
   return (
-    <ScrollView>
+    
     <View style={styles.container}>
-      <Text style={styles.title}>test #1</Text>
-      <Text style={styles.title}>test #2</Text>
-      <Text style={styles.title}>test #3</Text>
-      <Text style={styles.title}>test #4</Text>
-      {array1.map(val => {
-        return <Text>{val}</Text>
-      })}
-      <TouchableOpacity onPress={() => add('2')}>
-        <Text style={styles.title}>Tab {value}</Text>
-      </TouchableOpacity>
-      <TextInput
-        style={{borderWidth: 1, borderColor: 'black', height: 30, width:200}}
-        onChangeText={setValue}
-        value={value}
-        placeholder="useless placeholder"
+      <Text style={styles.title}>Add an item to the list</Text>
+      
+      <TextInput placeholder='What do you want to add?'
+      onChangeText={setInputData}
+      style={styleSheet.textInput}
       />
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+
+      <Button onPress={addInputToArray}
+         title={'Add'}
+      />
+      
+      <View style={styles.separator} lightColor="black" darkColor="rgba(255,255,255,0.1)">
+      
+      </View>
+
+      <View style={styleSheet.MainContainer}>
+        <ScrollView>
+          {
+            inputArray.map((item) => (
+              <TouchableOpacity onPress={() => Show_Selected_Item(item)}>
+                <Text style={styles.title}>Task = {item}</Text>
+                <Divider />
+              </TouchableOpacity>
+            ))
+          }
+        </ScrollView>
+      </View>
     </View>
-    </ScrollView>
+
   );
+
+
+
 }
 
 const styles = StyleSheet.create({
@@ -49,12 +79,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: '90%',
   },
 });
+
+const styleSheet = StyleSheet.create({
+  MainContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  text:{
+    fontSize: 25,
+    color: 'black',
+    textAlign: 'center',
+    paddingBottom: 20
+  },
+
+  textInput: {
+    textAlign: 'center',
+    marginBottom: 20,
+    height: 44,
+    width: '88%',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 7,
+  }
+})
